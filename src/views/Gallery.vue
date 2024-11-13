@@ -1,7 +1,11 @@
-<template>
-  <div>Hello</div>
-</template>
+<script setup lang="ts">
+import DrawingGallery from '@/components/DrawingGallery.vue'
+</script>
 
-<script setup lang="ts"></script>
+<template>
+  <main>
+    <DrawingGallery />
+  </main>
+</template>
 
 <style scoped></style>
