@@ -3,9 +3,9 @@ import DrawingGallery from '@/components/DrawingGallery.vue'
 </script>
 
 <template>
-  <main>
+  <div class="gallery">
     <DrawingGallery />
-  </main>
+  </div>
 </template>
 
 <style scoped></style>
