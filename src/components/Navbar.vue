@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
+import { useAuth } from '@/composables/useAuth'
+import { useAuthStore } from '@/store/auth'
+
+const authStore = useAuthStore()
+const { logout } = useAuth()
 </script>
 
 <template>
@@ -15,7 +20,12 @@ import { Icon } from '@iconify/vue'
             draw
           </button>
         </router-link>
-        <button class="nav__buttons-exit" aria-label="Exit">
+        <button
+          v-if="authStore.user"
+          @click="logout"
+          class="nav__buttons-exit"
+          aria-label="Exit"
+        >
           <Icon icon="iconamoon:exit-thin" class="icon" />
         </button>
       </div>
@@ -39,12 +49,12 @@ import { Icon } from '@iconify/vue'
 
   .nav__logo {
     font-size: 22px;
-    color: white;
     font-family: sans-serif;
   }
 
   .nav__buttons {
     display: flex;
+    align-items: center;
     gap: 14px;
 
     button {
@@ -74,11 +84,5 @@ import { Icon } from '@iconify/vue'
       }
     }
   }
-}
-
-.icon {
-  color: white;
-  width: 20px;
-  height: 20px;
 }
 </style>
