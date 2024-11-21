@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useGallery } from '@/composables/useGallery'
+
+const { addDrawing } = useGallery()
 
 const canvas = ref<HTMLCanvasElement | null>(null)
 const isDrawing = ref<boolean>(false)
@@ -58,7 +61,7 @@ const stopDrawing = () => {
 const saveDrawing = () => {
   if (!canvas.value) return
   const dataURL = canvas.value.toDataURL()
-  console.log('Image:', dataURL)
+  addDrawing(dataURL)
 }
 </script>
 

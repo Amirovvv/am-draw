@@ -1,15 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
-// Тестовые данные
-const drawings = ref([
-  'https://via.placeholder.com/650',
-  'https://via.placeholder.com/650',
-  'https://via.placeholder.com/650',
-  'https://via.placeholder.com/650',
-  'https://via.placeholder.com/650',
-  'https://via.placeholder.com/650',
-])
+defineProps({
+  drawings: Array,
+})
 </script>
 
 <template>
@@ -20,8 +14,9 @@ const drawings = ref([
       :key="index"
     >
       <img
-        :src="drawing"
+        :src="drawing.url"
         :alt="`${index + 1}`"
+        draggable="false"
         class="drawing-gallery__image"
       />
     </div>
@@ -33,13 +28,13 @@ const drawings = ref([
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 32px;
-  width: 80%;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 32px 0;
 
   &__item {
-    width: 100%;
-    height: auto;
+    width: 280px;
+    height: 280px;
     border-radius: 10px;
     overflow: hidden;
   }
@@ -47,6 +42,7 @@ const drawings = ref([
   &__image {
     width: 100%;
     height: 100%;
+    background: #ffffff;
   }
 }
 </style>
