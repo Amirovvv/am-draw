@@ -11,7 +11,7 @@ const { logout } = useAuth()
   <header>
     <nav class="nav">
       <div class="nav__logo">
-        <router-link to="/">Amdraw</router-link>
+        <router-link to="/">amdraw</router-link>
       </div>
       <div class="nav__buttons">
         <router-link to="/draw">
@@ -38,18 +38,18 @@ const { logout } = useAuth()
   display: flex;
   justify-content: space-between;
   background-color: #0e0e10;
-  width: 50%;
   border-radius: 0 0 40px 40px;
-  max-width: 800px;
+  max-width: 660px;
+  height: 80px;
   margin: 0 auto;
-  padding: 18px 36px;
+  padding: 0 28px;
   border: 1px solid #27272a;
   border-top: none;
   align-items: center;
 
   .nav__logo {
-    font-size: 22px;
-    font-family: sans-serif;
+    font-size: 24px;
+    font-family: 'Silkscreen', sans-serif;
   }
 
   .nav__buttons {
@@ -60,13 +60,14 @@ const { logout } = useAuth()
     button {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 2px;
     }
 
     &-draw {
       padding: 10px 12px;
       background-color: #28a745;
       border-radius: 14px;
+      font-size: 16px;
 
       &:hover {
         background-color: #218838;
@@ -74,9 +75,11 @@ const { logout } = useAuth()
     }
 
     &-exit {
+      justify-content: center;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
       border: 1px solid #27272a;
-      padding: 10px;
 
       &:hover {
         background-color: #ff4d4d;

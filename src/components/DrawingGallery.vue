@@ -26,11 +26,12 @@ defineProps({
 <style scoped lang="scss">
 .drawing-gallery {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 32px;
   max-width: 1280px;
   margin: 0 auto;
   padding: 32px 0;
+  justify-items: center;
 
   &__item {
     width: 280px;
