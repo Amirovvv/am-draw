@@ -19,6 +19,7 @@ export function useAuth() {
     try {
       const result = await signInWithPopup(auth, provider)
       authStore.setUser(result.user)
+      localStorage.setItem('user', JSON.stringify(result.user))
       router.push('/draw')
     } catch (err) {
       console.log('error', err)
@@ -33,6 +34,7 @@ export function useAuth() {
     try {
       const result = await signInWithPopup(auth, provider)
       authStore.setUser(result.user)
+      localStorage.setItem('user', JSON.stringify(result.user))
       router.push('/draw')
     } catch (err) {
       console.log('error', err)
@@ -44,19 +46,28 @@ export function useAuth() {
   const logout = async () => {
     await signOut(auth)
     authStore.clearUser()
+    localStorage.removeItem('user')
     router.push('/')
   }
 
   const checkAuthState = () => {
     return new Promise<void>((resolve) => {
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          authStore.setUser(user)
-        } else {
-          authStore.clearUser()
-        }
+      const cachedUser = localStorage.getItem('user')
+      if (cachedUser) {
+        authStore.setUser(JSON.parse(cachedUser))
         resolve()
-      })
+      } else {
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            authStore.setUser(user)
+            localStorage.setItem('user', JSON.stringify(user))
+          } else {
+            authStore.clearUser()
+            localStorage.removeItem('user')
+          }
+          resolve()
+        })
+      }
     })
   }
 
