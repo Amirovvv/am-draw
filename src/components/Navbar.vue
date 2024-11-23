@@ -43,7 +43,7 @@ const { logout } = useAuth()
   height: 80px;
   margin: 0 auto;
   padding: 0 28px;
-  border: 1px solid #27272a;
+  border: 1px solid #1b1b1d;
   border-top: none;
   align-items: center;
 

@@ -54,6 +54,11 @@ onMounted(async () => {
     font-weight: bold;
     width: 100%;
 
+    & p:first-of-type {
+      font-family: 'Silkscreen', sans-serif;
+      font-weight: normal;
+    }
+
     p {
       margin: 0;
     }

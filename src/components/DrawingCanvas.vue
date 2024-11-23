@@ -103,7 +103,7 @@ const saveDrawing = () => {
   margin-bottom: 10px;
   border-radius: 8px;
   filter: contrast(1.2);
-  background-color: #fff;
+  background-color: #f0f0f0;
 }
 
 .drawing-canvas__controls {
