@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useGallery } from '@/composables/useGallery'
 
+const router = useRouter()
 const { addDrawing } = useGallery()
 
 const canvas = ref<HTMLCanvasElement | null>(null)
@@ -62,6 +64,7 @@ const saveDrawing = () => {
   if (!canvas.value) return
   const dataURL = canvas.value.toDataURL()
   addDrawing(dataURL)
+  router.push('/')
 }
 </script>
 

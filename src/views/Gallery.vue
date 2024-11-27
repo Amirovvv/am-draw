@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
+import DrawingGallery from '@/components/DrawingGallery.vue'
 import { useGalleryStore } from '@/store/gallery'
 import { useGallery } from '@/composables/useGallery.ts'
-import DrawingGallery from '@/components/DrawingGallery.vue'
 
 const { fetchDrawings } = useGallery()
 const store = useGalleryStore()
@@ -14,7 +14,7 @@ onMounted(() => {
 
 <template>
   <div class="gallery">
-    <DrawingGallery :if="store.drawings > 0" :drawings="store.drawings" />
+    <DrawingGallery :drawings="store.drawings" />
   </div>
 </template>
 
