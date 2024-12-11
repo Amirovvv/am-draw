@@ -1,3 +1,4 @@
+import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/store/auth'
 import { useGalleryStore } from '@/store/gallery'
 import { firestore } from '@/services/firebaseConfig'
@@ -13,7 +14,7 @@ import {
   orderBy,
 } from 'firebase/firestore'
 import { timeAgo } from '@/utils/timeAgo'
-import { useRouter } from 'vue-router'
+import type { Drawing } from '@/types/Drawing'
 
 export function useGallery() {
   const { user } = useAuthStore()
@@ -23,7 +24,7 @@ export function useGallery() {
   const drawingsCollection = collection(firestore, 'drawings')
   const sortedQuery = query(drawingsCollection, orderBy('date', 'desc'))
 
-  const handleFirestoreError = (error) => {
+  const handleFirestoreError = (error: unknown) => {
     console.error(error)
   }
 
@@ -39,11 +40,11 @@ export function useGallery() {
           }))
           setDrawings(res)
         } catch (error) {
-          handleFirestoreError(error, 'fetchDrawings')
+          handleFirestoreError(error)
         }
       },
       (error) => {
-        handleFirestoreError(error, 'onSnapshot')
+        handleFirestoreError(error)
       }
     )
   }
@@ -60,7 +61,7 @@ export function useGallery() {
         likedBy: [],
       })
     } catch (error) {
-      handleFirestoreError(error, 'addDrawing')
+      handleFirestoreError(error)
     }
   }
 
@@ -91,7 +92,7 @@ export function useGallery() {
         likedBy: hasLiked ? arrayRemove(userId) : arrayUnion(userId),
       })
     } catch (error) {
-      handleFirestoreError(error, 'toggleLike')
+      handleFirestoreError(error)
 
       drawing.likes = hasLiked ? newLikes + 1 : newLikes - 1
       drawing.likedBy = hasLiked
@@ -100,7 +101,7 @@ export function useGallery() {
     }
   }
 
-  const isLiked = (drawing: any) => {
+  const isLiked = (drawing: Drawing) => {
     if (!user) return false
     return drawing.likedBy.includes(user.uid)
   }

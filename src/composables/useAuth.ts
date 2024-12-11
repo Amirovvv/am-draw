@@ -13,8 +13,9 @@ export function useAuth() {
   const authStore = useAuthStore()
   const router = useRouter()
 
-  const loginWithGoogle = async () => {
-    const provider = new GoogleAuthProvider()
+  const loginWithProvider = async (
+    provider: GoogleAuthProvider | GithubAuthProvider
+  ) => {
     authStore.isLoading = true
     try {
       const result = await signInWithPopup(auth, provider)
@@ -22,26 +23,14 @@ export function useAuth() {
       localStorage.setItem('user', JSON.stringify(result.user))
       router.push('/draw')
     } catch (err) {
-      console.log('error', err)
+      console.error('Login error', err)
     } finally {
       authStore.isLoading = false
     }
   }
 
-  const loginWithGitHub = async () => {
-    const provider = new GithubAuthProvider()
-    authStore.isLoading = true
-    try {
-      const result = await signInWithPopup(auth, provider)
-      authStore.setUser(result.user)
-      localStorage.setItem('user', JSON.stringify(result.user))
-      router.push('/draw')
-    } catch (err) {
-      console.log('error', err)
-    } finally {
-      authStore.isLoading = false
-    }
-  }
+  const loginWithGoogle = () => loginWithProvider(new GoogleAuthProvider())
+  const loginWithGitHub = () => loginWithProvider(new GithubAuthProvider())
 
   const logout = async () => {
     await signOut(auth)

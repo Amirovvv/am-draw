@@ -1,4 +1,4 @@
-export function timeAgo(timestamp) {
+export function timeAgo(timestamp: number): string {
   const now = Date.now()
   const diffMs = now - timestamp
   const diffSeconds = Math.floor(diffMs / 1000)

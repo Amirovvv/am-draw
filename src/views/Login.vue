@@ -1,28 +1,8 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import { useAuth } from '@/composables/useAuth'
-import { useAuthStore } from '@/store/auth'
 import { Icon } from '@iconify/vue'
 
-const authStore = useAuthStore()
-const router = useRouter()
-const { loginWithGoogle, loginWithGitHub, checkAuthState } = useAuth()
-
-const handleLoginWithGoogleClick = () => {
-  loginWithGoogle()
-}
-
-const handleLoginWithGitHubClick = () => {
-  loginWithGitHub()
-}
-
-onMounted(async () => {
-  await checkAuthState()
-  if (authStore.user) {
-    router.push('/draw')
-  }
-})
+const { loginWithGoogle, loginWithGitHub } = useAuth()
 </script>
 
 <template>
@@ -32,11 +12,19 @@ onMounted(async () => {
       <p>Login to your account</p>
     </div>
     <div class="login__btns">
-      <button class="login__btn" @click="handleLoginWithGoogleClick">
+      <button
+        class="login__btn"
+        @click="loginWithGoogle"
+        aria-label="Login with Google"
+      >
         <Icon icon="flat-color-icons:google" class="icon" />
         Login with Google
       </button>
-      <button class="login__btn" @click="handleLoginWithGitHubClick">
+      <button
+        class="login__btn"
+        @click="loginWithGitHub"
+        aria-label="Login with GitHub"
+      >
         <Icon icon="bytesize:github" class="icon" />
         Login with GitHub
       </button>

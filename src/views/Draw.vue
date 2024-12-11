@@ -7,5 +7,3 @@ import DrawingCanvas from '@/components/DrawingCanvas.vue'
     <DrawingCanvas />
   </div>
 </template>
-
-<style scoped></style>
