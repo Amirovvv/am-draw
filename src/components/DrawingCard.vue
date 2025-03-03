@@ -6,12 +6,6 @@ import type { Drawing } from '@/types/Drawing'
 const props = defineProps<{
   drawing: Drawing
 }>()
-
-const { toggleLike, isLiked } = useGallery()
-
-const toggleLikeDrawing = () => {
-  toggleLike(props.drawing.id)
-}
 </script>
 
 <template>
@@ -26,15 +20,6 @@ const toggleLikeDrawing = () => {
 
     <div class="drawing-card__image">
       <img :src="drawing.url" :alt="`${drawing.author}`" draggable="false" />
-    </div>
-
-    <div
-      class="drawing-card__like"
-      :class="{ 'drawing-card__like--active': isLiked(drawing) }"
-      @click="toggleLikeDrawing()"
-    >
-      <Icon icon="icon-park-outline:like" class="drawing-card__like-icon" />
-      <span class="drawing-card__like-count">{{ drawing.likes }}</span>
     </div>
   </div>
 </template>
@@ -83,32 +68,5 @@ const toggleLikeDrawing = () => {
       background: #f0f0f0;
     }
   }
-
-  &__like {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 4px;
-    user-select: none;
-
-    &-icon {
-      transition:
-        fill 0.3s,
-        stroke 0.3s;
-      width: 24px;
-      height: 24px;
-      cursor: pointer;
-    }
-
-    &-count {
-      font-size: 16px;
-    }
-  }
-}
-
-::v-deep(.drawing-card__like--active path) {
-  fill: red;
-  stroke-width: 1;
-  stroke: red;
 }
 </style>

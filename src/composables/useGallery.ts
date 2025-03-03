@@ -1,4 +1,3 @@
-import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/store/auth'
 import { useGalleryStore } from '@/store/gallery'
 import { firestore } from '@/services/firebaseConfig'
@@ -6,20 +5,14 @@ import {
   collection,
   addDoc,
   onSnapshot,
-  doc,
-  updateDoc,
-  arrayRemove,
-  arrayUnion,
   query,
   orderBy,
 } from 'firebase/firestore'
 import { timeAgo } from '@/utils/timeAgo'
-import type { Drawing } from '@/types/Drawing'
 
 export function useGallery() {
   const { user } = useAuthStore()
   const { setDrawings } = useGalleryStore()
-  const router = useRouter()
 
   const drawingsCollection = collection(firestore, 'drawings')
   const sortedQuery = query(drawingsCollection, orderBy('date', 'desc'))
@@ -57,59 +50,14 @@ export function useGallery() {
         date: Date.now(),
         author: user.displayName || 'Unknown Author',
         photoURL: user.photoURL,
-        likes: 0,
-        likedBy: [],
       })
     } catch (error) {
       handleFirestoreError(error)
     }
-  }
-
-  const toggleLike = async (drawingId: string) => {
-    if (!user) {
-      router.push('/login')
-      return
-    }
-    const userId = user.uid
-    const drawingRef = doc(firestore, 'drawings', drawingId)
-
-    const { drawings } = useGalleryStore()
-    const drawing = drawings.find((d) => d.id === drawingId)
-    if (!drawing) return
-
-    const hasLiked = drawing.likedBy.includes(userId)
-    const newLikes = hasLiked ? drawing.likes - 1 : drawing.likes + 1
-    const newLikedBy = hasLiked
-      ? drawing.likedBy.filter((id) => id !== userId)
-      : [...drawing.likedBy, userId]
-
-    drawing.likes = newLikes
-    drawing.likedBy = newLikedBy
-
-    try {
-      await updateDoc(drawingRef, {
-        likes: newLikes,
-        likedBy: hasLiked ? arrayRemove(userId) : arrayUnion(userId),
-      })
-    } catch (error) {
-      handleFirestoreError(error)
-
-      drawing.likes = hasLiked ? newLikes + 1 : newLikes - 1
-      drawing.likedBy = hasLiked
-        ? [...newLikedBy, userId]
-        : newLikedBy.filter((id) => id !== userId)
-    }
-  }
-
-  const isLiked = (drawing: Drawing) => {
-    if (!user) return false
-    return drawing.likedBy.includes(user.uid)
   }
 
   return {
     fetchDrawings,
     addDrawing,
-    toggleLike,
-    isLiked,
   }
 }
