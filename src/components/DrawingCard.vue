@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useGallery } from '@/composables/useGallery'
-import { Icon } from '@iconify/vue'
 import type { Drawing } from '@/types/Drawing'
 
 const props = defineProps<{
@@ -24,7 +22,7 @@ const props = defineProps<{
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .drawing-card {
   &__info {
     display: flex;

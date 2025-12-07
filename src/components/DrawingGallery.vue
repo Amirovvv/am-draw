@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import DrawingCard from '@/components/DrawingCard.vue'
+import SkeletonCard from '@/components/SkeletonCard.vue'
 import type { Drawing } from '@/types/Drawing'
 
 defineProps<{
@@ -9,11 +10,17 @@ defineProps<{
 
 <template>
   <div class="drawing">
-    <DrawingCard
-      v-for="(drawing, index) in drawings"
-      :key="index"
-      :drawing="drawing"
-    />
+    <template v-if="drawings.length > 0">
+      <DrawingCard
+        v-for="(drawing, index) in drawings"
+        :key="index"
+        :drawing="drawing"
+      />
+    </template>
+
+    <template v-else>
+      <SkeletonCard v-for="n in 8" :key="n" />
+    </template>
   </div>
 </template>
 
