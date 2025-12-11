@@ -60,11 +60,21 @@ const stopDrawing = () => {
   isDrawing.value = false
 }
 
-const saveDrawing = () => {
+const saveDrawing = async () => {
   if (!canvas.value) return
-  const dataURL = canvas.value.toDataURL()
-  addDrawing(dataURL)
-  router.push('/')
+  const result = await addDrawing(canvas.value)
+  if (result.success) {
+    router.push('/')
+  } else {
+    const errorMessage = result.error || 'Не удалось сохранить рисунок'
+    alert(errorMessage)
+    if (
+      errorMessage.includes('не авторизован') ||
+      errorMessage.includes('авторизован')
+    ) {
+      router.push('/login')
+    }
+  }
 }
 </script>
 

@@ -41,22 +41,25 @@ export function useAuth() {
 
   const checkAuthState = () => {
     return new Promise<void>((resolve) => {
-      const cachedUser = localStorage.getItem('user')
-      if (cachedUser) {
-        authStore.setUser(JSON.parse(cachedUser))
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user) {
+          authStore.setUser(user)
+          localStorage.setItem(
+            'user',
+            JSON.stringify({
+              uid: user.uid,
+              displayName: user.displayName,
+              email: user.email,
+              photoURL: user.photoURL,
+            })
+          )
+        } else {
+          authStore.clearUser()
+          localStorage.removeItem('user')
+        }
+        unsubscribe()
         resolve()
-      } else {
-        onAuthStateChanged(auth, (user) => {
-          if (user) {
-            authStore.setUser(user)
-            localStorage.setItem('user', JSON.stringify(user))
-          } else {
-            authStore.clearUser()
-            localStorage.removeItem('user')
-          }
-          resolve()
-        })
-      }
+      })
     })
   }
 
