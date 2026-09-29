@@ -1,0 +1,9 @@
+# Security and cache headers are generated into dist/_headers from config/security-headers.ts.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
