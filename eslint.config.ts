@@ -25,6 +25,15 @@ export default defineConfigWithVueTs(
   vueTsConfigs.strict,
 
   {
+    name: 'app/vue-ts',
+    files: ['**/*.vue'],
+    rules: {
+      // Optional TS props are `undefined` by default; forcing defaults only adds noise.
+      'vue/require-default-prop': 'off',
+    },
+  },
+
+  {
     name: 'app/i18n',
     files: ['src/**/*.vue'],
     plugins: { '@intlify/vue-i18n': pluginVueI18n },

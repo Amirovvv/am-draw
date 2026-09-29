@@ -26,10 +26,12 @@ export default defineConfig({
     {
       name: 'iphone',
       use: { ...devices['iPhone 15'] },
+      testIgnore: /\.desktop\.spec\.ts$/,
     },
     {
       name: 'desktop-chrome',
       use: { ...devices['Desktop Chrome'] },
+      testIgnore: /\.mobile\.spec\.ts$/,
     },
   ],
   webServer: {

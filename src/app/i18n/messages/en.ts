@@ -1,6 +1,9 @@
 import type { MessageSchema } from '@/app/i18n/messages'
 
 const en: MessageSchema = {
+  common: {
+    loading: 'Loading…',
+  },
   app: {
     name: 'amdraw',
     tagline: 'Draw on your phone and share with the world',
@@ -18,19 +21,24 @@ const en: MessageSchema = {
   },
   feed: {
     title: 'Feed',
-    placeholder: 'Drawings will appear here soon',
+    emptyTitle: 'The feed is empty',
+    emptyDescription: 'Drawings will appear here. Be the first to post!',
+    drawFirst: 'Draw the first one',
   },
   draw: {
     title: 'Draw',
-    placeholder: 'The canvas is coming in the next updates',
+    emptyTitle: 'The canvas is coming soon',
+    emptyDescription: 'Drawing tools arrive in the next updates',
   },
   profile: {
     title: 'Profile',
-    placeholder: 'Your profile will appear after sign-in',
+    emptyTitle: 'Your profile is empty',
+    emptyDescription: 'It will appear after sign-in',
   },
   notFound: {
     title: 'Page not found',
-    description: 'The link may be outdated or contain a typo',
+    emptyTitle: 'Nothing here',
+    emptyDescription: 'The link may be outdated or contain a typo',
     home: 'Go home',
   },
 }

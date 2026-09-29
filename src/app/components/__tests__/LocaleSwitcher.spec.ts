@@ -14,17 +14,18 @@ describe('LocaleSwitcher', () => {
   it('switches the locale, updates <html lang> and remembers the choice', async () => {
     const wrapper = mount(LocaleSwitcher, { global: { plugins: [i18n] } })
 
-    await wrapper.get('[data-testid="locale-switcher"]').setValue('ru')
+    await wrapper.get('input[value="ru"]').setValue(true)
 
     expect(i18n.global.locale.value).toBe('ru')
     expect(document.documentElement.lang).toBe('ru')
     expect(localStorage.getItem(LOCALE_STORAGE_KEY)).toBe('ru')
   })
 
-  it('shows every supported language by its own name', () => {
+  it('names every language by its own name and marks the current one', () => {
     const wrapper = mount(LocaleSwitcher, { global: { plugins: [i18n] } })
 
-    const options = wrapper.findAll('option').map((option) => option.text())
-    expect(options).toEqual(['Русский', 'English'])
+    const names = wrapper.findAll('label span.visually-hidden').map((name) => name.text())
+    expect(names).toEqual(['Русский', 'English'])
+    expect(wrapper.get<HTMLInputElement>('input[value="en"]').element.checked).toBe(true)
   })
 })

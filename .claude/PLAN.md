@@ -70,8 +70,8 @@ e2e/            — Playwright
 - [x] Удалить старый `src/`, лишние зависимости; `create-vue` (TS, router, pinia, vitest, playwright, eslint, prettier) — 1a
 - [x] `tsconfig` strict, `.nvmrc` (Node 22 LTS), алиас `@/` — 1a
 - [x] vue-i18n: ru + en, автоопределение, переключатель, все строки только через ключи (никакого текста в шаблонах) — 1a
-- [ ] Дизайн-токены (цвета, отступы, радиусы, типографика), тёмная тема как в v1, шрифты self-hosted (@fontsource)
-- [ ] UI-кит `shared/ui` + layout: верхняя панель, нижняя навигация на мобильных, `100dvh`, `safe-area-inset`
+- [x] Дизайн-токены (цвета, отступы, радиусы, типографика), тёмная тема как в v1, шрифты self-hosted (@fontsource) — 1b
+- [x] UI-кит `shared/ui` + layout: верхняя панель, нижняя навигация на мобильных, `100dvh`, `safe-area-inset` — 1b (BottomSheet и Toast — в этапах 3–4, по месту)
 - [x] `index.html`: title, favicon, theme-color, базовые OG-теги, `viewport-fit=cover`
 - [x] `netlify.toml`: SPA-редирект, security headers (CSP, HSTS, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, frame-ancestors)
 - [x] GitHub Actions: typecheck, lint, unit, build, e2e

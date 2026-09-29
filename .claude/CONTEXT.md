@@ -3,15 +3,16 @@
 Полный план и принятые решения: `.claude/PLAN.md`. Читать его в начале каждой сессии.
 
 ## Текущий статус
-- Этап: **1 — Каркас**, часть 1a готова (ветка `feat/v2-scaffold` → PR в `feat/v2`); дальше 1b
+- Этап: **1 — Каркас**, 1a смёржен; 1b закоммичен в `feat/v2-ui-kit` (не запушен) → PR в `feat/v2`
 - Этап 0: аккаунты владельца ещё не созданы (нужны к этапу 2)
 - Ветки `feat/v2` и `feat/v2-scaffold` и тег `v1` не запушены — `git push` запрещён в глобальных deny, пушит владелец
-- Следующий шаг: push + PR 1a → новая сессия, этап 1b (токены, шрифты, unplugin-icons, UI-кит, layout, нижняя навигация)
+- Следующий шаг: push + PR 1b, проверить CI → этап 2 (нужны аккаунты этапа 0)
 
 ## Окружение
 - Node 22 через fnm: `eval "$(fnm env)" && fnm use 22` (системный node — 20)
 - npm 10 из Node 22 падает (`edgesOut`) → использовать `node /opt/homebrew/lib/node_modules/npm/bin/npm-cli.js` (npm 11)
 - VPN/TUN владельца (fake-IP 198.18.x) рвёт HTTP/1.1 → npm/Node качают с обрывами. Помогает выключить VPN или добавить registry.npmjs.org в DIRECT
+- npm install из песочницы Claude всегда падает ECONNRESET → ставит владелец в своём терминале, с `--no-audit --no-fund` (обрыв был именно на audit)
 - Проверки: `npm run check` (types, lint, format, unit), `npm run test:e2e` (build + preview + iPhone/desktop)
 
 ## Как продолжить в новой сессии
@@ -42,3 +43,10 @@
 - Решение: ESLint запрещает текст в шаблонах, `../` импорты и supabase вне `features/*/api`/`lib`; e2e всегда на prod-сборке под CSP; `style-src 'self'` без unsafe-inline
 - Осталось: 1b; проверить, что CI зелёный после push
 
+
+## 2026-09-29 Этап 1b — токены, UI-кит, layout
+- Сделано: `tokens.css` (цвета v1, отступы, радиусы, типографика, слои, safe-area); шрифты @fontsource (Exo 2 variable, Silkscreen только для логотипа); `unplugin-icons` + lucide; `shared/ui`: AppButton, IconButton, AppSpinner, AppAvatar, EmptyState; layout: AppHeader (навигация в шапке на ≥768px), BottomNav (мобильные, «Рисовать» акцентом), `100dvh`, safe-area; страницы на EmptyState; unit-тесты кита; e2e разделены на `*.mobile.spec.ts` / `*.desktop.spec.ts` через `testIgnore` проектов; проверено визуально на iPhone и десктопе
+- Решение: `--color-text-muted` #8e8e93 (v1 #737373 не проходил AA); на зелёном/красном тёмный текст (белый не проходил AA); цвета аватаров — классы, не inline-стили (CSP); `vue/require-default-prop` выключен (конфликт с опциональными TS-пропсами); `tsconfig.vitest` lib ES2022; BottomSheet/Toast — по месту в этапах 3–4; simple-icons — в этапе 2
+- Дизайн (по просьбе владельца, цвета и расположение те же): анимированная «пилюля» активного пункта в нижней навигации и шапке; у primary-кнопок градиент, блик и свечение; язык — сегментный контрол RU | EN на radio вместо select; EmptyState с мягким появлением; плавная смена страниц (`Transition`, `:key="route.path"`)
+- Ревью: блокеров нет. Отложено: AppButton-ссылка при смене disabled/loading перемонтирует тег (возможна потеря фокуса) — проверить на этапе 4 с кнопкой публикации; зона 44px у IconButton может перекрываться в плотном тулбаре — учесть на этапе 3; `:has()` требует iOS 16.4+ (совпадает с дефолтным таргетом Vite 8)
+- Осталось: push ветки (владелец), PR в `feat/v2`, зелёный CI
