@@ -1,11 +1,8 @@
+# Security and cache headers are generated into dist/_headers from config/security-headers.ts.
 [build]
   command = "npm run build"
-  functions = "netlify/functions"
   publish = "dist"
 
-[functions]
-  node_bundler = "esbuild"
-  
 [[redirects]]
   from = "/*"
   to = "/index.html"

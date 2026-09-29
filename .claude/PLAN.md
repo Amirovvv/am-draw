@@ -10,6 +10,8 @@
 |---|---|
 | Репозиторий | Этот же. Тег `v1` на старый `main`, работа в `feat/v2`, после релиза merge в `main` и удаление `feat/v2` |
 | Фронтенд | Vue 3.5 + TypeScript strict + Vite + vue-router + Pinia (только клиентское состояние) |
+| Иконки | `unplugin-icons` (иконки в бандле, без сетевых запросов — совместимо со строгим CSP) |
+| Security headers | Единый источник `config/security-headers.ts` → `dist/_headers` для Netlify + `vite preview` (e2e идут под реальным CSP) |
 | Серверное состояние | TanStack Vue Query (кэш, infinite scroll, optimistic updates) |
 | Бэкенд | Только Supabase: Auth, Postgres + RLS, Storage, Edge Functions. Firebase удаляется полностью |
 | Supabase-проект | Новый, чистый. Схема — миграциями в репо (`supabase/migrations`) |
@@ -24,7 +26,7 @@
 | Модерация | Синхронно при публикации: OpenAI `omni-moderation-latest` (бесплатно: эротика, насилие, самоповреждение) + Claude Haiku 4.5 со своей политикой (символы ненависти, мат/оскорбления текстом, сексуализация несовершеннолетних, контакты/ссылки, спам). Исходы: чисто → в ленту / серая зона → очередь / нарушение → отказ с причиной. Сбой API → очередь (fail-closed). Первые 3 рисунка нового аккаунта → всегда ручная проверка. Жалобы (3 взвешенные → скрыт), страйки и бан, админка, Telegram-бот для модерации. Отклонённые — приватный бакет 30 дней |
 | AI-перерисовка | Leonardo, за фича-флагом, квота на пользователя/день + общий дневной лимит, после модерации. Результат копируется в свой Storage и тоже модерируется. Webhook с секретом |
 | Канвас | Pointer Events + perfect-freehand, штрихи хранятся векторно (дешёвый undo/redo), логический размер 1024×1024, экспорт WebP |
-| Качество | ESLint 9 + Prettier, vue-tsc, Vitest, Playwright (эмуляция iPhone), pgTAP для SQL, GitHub Actions CI |
+| Качество | ESLint 10 + oxlint + Prettier, vue-tsc, Vitest, Playwright (эмуляция iPhone), pgTAP для SQL, GitHub Actions CI |
 
 ## Структура фронтенда
 
@@ -64,14 +66,15 @@ e2e/            — Playwright
 Готово, когда: ветка создана, аккаунты есть, секреты НЕ в репозитории.
 
 ### Этап 1 — Каркас
-- [ ] Удалить старый `src/`, лишние зависимости; `create-vue` (TS, router, pinia, vitest, playwright, eslint, prettier)
-- [ ] `tsconfig` strict, `.nvmrc` (Node 22 LTS), алиас `@/`
-- [ ] vue-i18n: ru + en, автоопределение, переключатель, все строки только через ключи (никакого текста в шаблонах)
+Разбит на два PR: **1a** (каркас, i18n, заголовки, CI) и **1b** (токены, шрифты, иконки, UI-кит, layout).
+- [x] Удалить старый `src/`, лишние зависимости; `create-vue` (TS, router, pinia, vitest, playwright, eslint, prettier) — 1a
+- [x] `tsconfig` strict, `.nvmrc` (Node 22 LTS), алиас `@/` — 1a
+- [x] vue-i18n: ru + en, автоопределение, переключатель, все строки только через ключи (никакого текста в шаблонах) — 1a
 - [ ] Дизайн-токены (цвета, отступы, радиусы, типографика), тёмная тема как в v1, шрифты self-hosted (@fontsource)
 - [ ] UI-кит `shared/ui` + layout: верхняя панель, нижняя навигация на мобильных, `100dvh`, `safe-area-inset`
-- [ ] `index.html`: title, favicon, theme-color, базовые OG-теги, `viewport-fit=cover`
-- [ ] `netlify.toml`: SPA-редирект, security headers (CSP, HSTS, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, frame-ancestors)
-- [ ] GitHub Actions: typecheck, lint, unit, build, e2e
+- [x] `index.html`: title, favicon, theme-color, базовые OG-теги, `viewport-fit=cover`
+- [x] `netlify.toml`: SPA-редирект, security headers (CSP, HSTS, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, frame-ancestors)
+- [x] GitHub Actions: typecheck, lint, unit, build, e2e
 Готово, когда: пустое приложение с навигацией открывается на iPhone без горизонтального скролла, CI зелёный.
 
 ### Этап 2 — Supabase: схема, безопасность, вход
