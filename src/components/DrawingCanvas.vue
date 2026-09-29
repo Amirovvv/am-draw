@@ -28,6 +28,9 @@ onMounted(() => {
     ctx.value = canvas.value.getContext('2d')
     if (ctx.value) {
       ctx.value.scale(dpr, dpr)
+
+      ctx.value.fillStyle = '#ffffff'
+      ctx.value.fillRect(0, 0, width, height)
     }
   }
 })

@@ -1,9 +1,19 @@
 <script setup lang="ts">
 import type { Drawing } from '@/types/Drawing'
+import { computed, ref } from 'vue'
 
 const props = defineProps<{
   drawing: Drawing
 }>()
+
+const altText = computed(() => `Drawing by ${props.drawing.author}`)
+
+const isHovered = ref(false)
+
+const displayedImage = computed<string | undefined>(() => {
+  if (isHovered.value && props.drawing.aiUrl) return props.drawing.aiUrl
+  return props.drawing.url || undefined
+})
 </script>
 
 <template>
@@ -16,8 +26,12 @@ const props = defineProps<{
       <div class="drawing-card__date">{{ drawing.date }}</div>
     </div>
 
-    <div class="drawing-card__image">
-      <img :src="drawing.url" :alt="`${drawing.author}`" draggable="false" />
+    <div
+      class="drawing-card__image"
+      @mouseenter="isHovered = true"
+      @mouseleave="isHovered = false"
+    >
+      <img :src="displayedImage" :alt="altText" draggable="false" />
     </div>
   </div>
 </template>

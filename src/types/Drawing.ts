@@ -1,7 +1,9 @@
-export type Drawing = {
+export interface Drawing {
   id: string
   url: string
-  photoURL: string
+  aiUrl: string | undefined
+  aiStatus: 'pending' | 'processing' | 'done' | 'error'
   author: string
+  photoURL: string
   date: string
 }

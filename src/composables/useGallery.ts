@@ -19,101 +19,67 @@ export function useGallery() {
   const drawingsCollection = collection(firestore, 'drawings')
   const sortedQuery = query(drawingsCollection, orderBy('date', 'desc'))
 
-  const handleFirestoreError = (error: unknown) => {
-    console.error(error)
-  }
-
   const fetchDrawings = () => {
-    onSnapshot(
-      sortedQuery,
-      (snapshot) => {
-        try {
-          const res: Drawing[] = snapshot.docs.map((doc) => {
-            const data = doc.data()
-            const timestamp =
-              typeof data.date === 'number' ? data.date : Date.now()
-            return {
-              id: doc.id,
-              url: (data.url as string) || '',
-              author: (data.author as string) || 'Unknown Author',
-              photoURL: (data.photoURL as string) || '',
-              date: timeAgo(timestamp),
-            }
-          })
-          setDrawings(res)
-        } catch (error) {
-          handleFirestoreError(error)
+    onSnapshot(sortedQuery, (snapshot) => {
+      const res = snapshot.docs.map((doc) => {
+        const data = doc.data()
+        const timestamp = typeof data.date === 'number' ? data.date : Date.now()
+
+        return {
+          id: doc.id,
+          url: data.url || '',
+          aiUrl: data.aiUrl || null,
+          aiStatus: data.aiStatus || 'pending',
+          author: data.author || 'Unknown',
+          photoURL: data.photoURL || '',
+          date: timeAgo(timestamp),
         }
-      },
-      (error) => {
-        handleFirestoreError(error)
-      }
-    )
-  }
-
-  const addDrawing = async (
-    canvas: HTMLCanvasElement
-  ): Promise<{ success: boolean; error?: string }> => {
-    const currentUserValue = (authStore.user as any)?.value ?? authStore.user
-    if (!currentUserValue) {
-      const error = 'Пользователь не авторизован.'
-      console.error('User not authenticated:', { user: currentUserValue })
-      handleFirestoreError(error)
-      return { success: false, error }
-    }
-
-    const displayName =
-      (currentUserValue as any)?.displayName || 'Unknown Author'
-    const photoURL = (currentUserValue as any)?.photoURL || ''
-
-    try {
-      const blob = await new Promise<Blob | null>((resolve) =>
-        canvas.toBlob((b) => resolve(b), 'image/webp', 0.8)
-      )
-      if (!blob) {
-        const error = 'Не удалось создать Blob из canvas'
-        handleFirestoreError(error)
-        return { success: false, error }
-      }
-
-      const fileName = `drawing_${Date.now()}.webp`
-
-      const { error: uploadError } = await supabase.storage
-        .from('drawings')
-        .upload(fileName, blob, { upsert: true })
-
-      if (uploadError) {
-        const errorMessage = `Ошибка загрузки: ${uploadError.message}`
-        handleFirestoreError(uploadError)
-        return { success: false, error: errorMessage }
-      }
-
-      const { data } = supabase.storage.from('drawings').getPublicUrl(fileName)
-
-      if (!data?.publicUrl) {
-        const error = 'Не удалось получить publicUrl.'
-        handleFirestoreError(error)
-        return { success: false, error }
-      }
-
-      const publicUrl = data.publicUrl
-
-      await addDoc(drawingsCollection, {
-        url: publicUrl,
-        date: Date.now(),
-        author: displayName,
-        photoURL: photoURL,
       })
 
-      return { success: true }
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : 'Неизвестная ошибка при сохранении рисунка'
-      handleFirestoreError(error)
-      return { success: false, error: errorMessage }
-    }
+      setDrawings(res)
+    })
+  }
+
+  const addDrawing = async (canvas: HTMLCanvasElement) => {
+    const user = (authStore.user as any)?.value ?? authStore.user
+    if (!user) return { success: false, error: 'Пользователь не авторизован.' }
+
+    const displayName = user.displayName || 'Unknown Author'
+    const photoURL = user.photoURL || ''
+
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob((b) => resolve(b), 'image/webp', 0.8)
+    )
+
+    if (!blob) return { success: false, error: 'Не удалось создать Blob' }
+
+    const fileName = `drawing_${Date.now()}.webp`
+    await supabase.storage
+      .from('drawings')
+      .upload(fileName, blob, { upsert: true })
+    const { data } = supabase.storage.from('drawings').getPublicUrl(fileName)
+
+    if (!data?.publicUrl) return { success: false, error: 'Нет publicUrl' }
+
+    const docRef = await addDoc(drawingsCollection, {
+      url: data.publicUrl,
+      date: Date.now(),
+      author: displayName,
+      photoURL,
+      aiStatus: 'pending',
+      aiUrl: null,
+    })
+
+    // 👉 Запускаем генерацию
+    fetch('/.netlify/functions/startGeneration', {
+      method: 'POST',
+      body: JSON.stringify({
+        drawingId: docRef.id,
+        imageUrl: data.publicUrl,
+      }),
+    }).catch(console.error)
+
+    return { success: true }
   }
 
   return {
