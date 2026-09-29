@@ -1,4 +1,7 @@
 const ru = {
+  common: {
+    loading: 'Загрузка…',
+  },
   app: {
     name: 'amdraw',
     tagline: 'Рисуй с телефона и делись с миром',
@@ -16,19 +19,24 @@ const ru = {
   },
   feed: {
     title: 'Лента',
-    placeholder: 'Здесь скоро появятся рисунки',
+    emptyTitle: 'Лента пока пустая',
+    emptyDescription: 'Здесь появятся рисунки. Станьте первым автором!',
+    drawFirst: 'Нарисовать первым',
   },
   draw: {
     title: 'Рисовать',
-    placeholder: 'Холст появится в следующих обновлениях',
+    emptyTitle: 'Холст скоро появится',
+    emptyDescription: 'Инструменты рисования — в следующих обновлениях',
   },
   profile: {
     title: 'Профиль',
-    placeholder: 'Профиль появится после входа',
+    emptyTitle: 'Профиль пока пуст',
+    emptyDescription: 'Он появится после входа',
   },
   notFound: {
     title: 'Страница не найдена',
-    description: 'Возможно, ссылка устарела или в ней опечатка',
+    emptyTitle: 'Здесь ничего нет',
+    emptyDescription: 'Возможно, ссылка устарела или в ней опечатка',
     home: 'На главную',
   },
 }

@@ -45,12 +45,44 @@ test.describe('app shell', () => {
     await expect(page).toHaveURL('/')
   })
 
-  test('has no horizontal scroll', async ({ page }) => {
+  for (const path of ['/', '/draw', '/profile', '/missing']) {
+    test(`has no horizontal scroll on ${path}`, async ({ page }) => {
+      await page.goto(path)
+      await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+
+      const overflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      )
+      expect(overflow).toBeLessThanOrEqual(0)
+    })
+  }
+
+  test('loads self-hosted fonts under the CSP', async ({ page }) => {
+    const errors = collectConsoleErrors(page)
     await page.goto('/')
-    const overflow = await page.evaluate(
-      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
-    )
-    expect(overflow).toBeLessThanOrEqual(0)
+
+    const loaded = await page.evaluate(async () => {
+      await document.fonts.ready
+      return {
+        text: document.fonts.check('16px "Exo 2 Variable"', 'Лента Feed'),
+        brand: document.fonts.check('16px Silkscreen', 'amdraw'),
+      }
+    })
+
+    expect(loaded).toEqual({ text: true, brand: true })
+    expect(errors).toEqual([])
+  })
+})
+
+test.describe('layout', () => {
+  test.use({ locale: 'en-US' })
+
+  test('marks the current section in the navigation', async ({ page }) => {
+    await page.goto('/draw')
+    const nav = page.getByRole('navigation', { name: 'Main navigation' })
+
+    await expect(nav.getByRole('link', { name: 'Draw' })).toHaveAttribute('aria-current', 'page')
+    await expect(nav.getByRole('link', { name: 'Feed' })).not.toHaveAttribute('aria-current')
   })
 })
 
@@ -71,7 +103,9 @@ test.describe('localization: switching', () => {
   test('switches language and remembers the choice after reload', async ({ page }) => {
     await page.goto('/')
 
-    await page.getByLabel('Language').selectOption('ru')
+    const switcher = page.getByTestId('locale-switcher')
+    await switcher.locator('label').filter({ hasText: 'RU' }).click()
+    await expect(switcher.getByRole('radio', { name: 'Русский' })).toBeChecked()
     await expect(page.getByRole('heading', { level: 1, name: 'Лента' })).toBeVisible()
     await expect(page).toHaveTitle('Лента · amdraw')
 

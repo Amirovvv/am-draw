@@ -1,3 +1,5 @@
+import '@/app/styles/fonts'
+import '@/app/styles/tokens.css'
 import '@/app/styles/base.css'
 
 import { createPinia } from 'pinia'
